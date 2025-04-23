@@ -553,8 +553,8 @@ int encode_tcp_pkt(uint8_t* msg, uint32_t sip, uint32_t dip,
 
     // 1 ethhdr
     struct rte_ether_hdr* ehdr = (struct rte_ether_hdr*)msg;
-    rte_memcpy(ehdr->s_addr.addr_bytes, smac, RTE_ETHER_ADDR_LEN);
-    rte_memcpy(ehdr->d_addr.addr_bytes, dmac, RTE_ETHER_ADDR_LEN);
+    rte_memcpy(ehdr->src_addr.addr_bytes, smac, RTE_ETHER_ADDR_LEN);
+    rte_memcpy(ehdr->dst_addr.addr_bytes, dmac, RTE_ETHER_ADDR_LEN);
     ehdr->ether_type = htons(RTE_ETHER_TYPE_IPV4);
 
     // 2 iphdr

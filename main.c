@@ -7,7 +7,7 @@
 #include "udp.h"
 #include "arp.h"
 #include "icmp.h"
-#include "kni.h"
+// #include "kni.h"
 #include "ddos.h"
 
 #define Eable_DDOS 0
@@ -15,7 +15,7 @@
 #define BURST_SIZE 32
 
 static const struct rte_eth_conf port_conf_default = {
-    .rxmode = {.max_rx_pkt_len = RTE_ETHER_MAX_LEN }
+    .rxmode = {.max_lro_pkt_size = RTE_ETHER_MAX_LEN }
 };
 
 int main(int argc, char* argv[]) {
@@ -66,7 +66,7 @@ int pkt_handler(UN_USED void* arg) {
 
 #if Eable_DDOS
         for (unsigned i = 0; i < nb_rx; ++i) {
-            if (ddos_detect(mbufs[i])) {
+            if (ddos_detect(mbufs[i])) {max_rx_pkt_len
                 for (unsigned j = 0; j < nb_rx; ++j) {
                     rte_pktmbuf_free(mbufs[i]);
                     goto out;
@@ -82,12 +82,9 @@ int pkt_handler(UN_USED void* arg) {
                 mbufs[i], struct rte_ipv4_hdr*, sizeof(struct rte_ether_hdr)
             );
 
-            arp_table_add(iphdr->src_addr, ehdr->s_addr.addr_bytes, 0);
+            arp_table_add(iphdr->src_addr, ehdr->src_addr.addr_bytes, 0);
 
-            if (is_fwd_to_kni(ehdr)) {
-                rte_kni_tx_burst(get_kni(), &mbufs[i], 1);
-            }
-            else if (ehdr->ether_type == rte_cpu_to_be_16(RTE_ETHER_TYPE_ARP)) {
+            if (ehdr->ether_type == rte_cpu_to_be_16(RTE_ETHER_TYPE_ARP)) {
                 arp_pkt_handler(mbufs[i]);
             } else if (ehdr->ether_type == rte_cpu_to_be_16(RTE_ETHER_TYPE_IPV4)) {
                 if (iphdr->next_proto_id == IPPROTO_UDP) {
@@ -109,9 +106,6 @@ int pkt_handler(UN_USED void* arg) {
         }
 
 // out:
-        // rte_kni_handle_request(get_kni());
-
-        // kni_out();
 
         udp_server_out();
 

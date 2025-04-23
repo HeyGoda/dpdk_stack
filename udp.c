@@ -11,7 +11,7 @@
 
 #define UDP_BUF_LEN 1024
 #define Dns_Port 53
-#define Echo_Port 8888
+#define Echo_Port 8880
 
 enum host_enum {
     // Host_DNS = 0,
@@ -30,8 +30,8 @@ int encode_udp_pkt(uint8_t* msg, uint32_t sip, uint32_t dip,
 {
     // 1 ethhdr
     struct rte_ether_hdr* ehdr = (struct rte_ether_hdr*)msg;
-    rte_memcpy(ehdr->s_addr.addr_bytes, src_mac, RTE_ETHER_ADDR_LEN);
-    rte_memcpy(ehdr->d_addr.addr_bytes, dst_mac, RTE_ETHER_ADDR_LEN);
+    rte_memcpy(ehdr->src_addr.addr_bytes, src_mac, RTE_ETHER_ADDR_LEN);
+    rte_memcpy(ehdr->dst_addr.addr_bytes, dst_mac, RTE_ETHER_ADDR_LEN);
     ehdr->ether_type = htons(RTE_ETHER_TYPE_IPV4);
 
     // 2 iphdr

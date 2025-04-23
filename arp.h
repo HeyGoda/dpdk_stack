@@ -3,6 +3,7 @@
 #include <rte_ether.h>
 #include <rte_timer.h>
 #include <rte_ethdev.h>
+#include <rte_arp.h>
 
 #include "list.h"
 

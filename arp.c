@@ -102,8 +102,8 @@ int arp_table_rm(uint32_t ip) {
 int encode_arp_pkt(uint8_t* msg, uint16_t opcode, uint8_t* dst_mac, uint32_t sip, uint32_t dip) {
     // 1 ethhdr
     struct rte_ether_hdr* eth = (struct rte_ether_hdr*)msg;
-    rte_memcpy(eth->s_addr.addr_bytes, get_local_mac(), RTE_ETHER_ADDR_LEN);
-    rte_memcpy(eth->d_addr.addr_bytes, dst_mac, RTE_ETHER_ADDR_LEN);
+    rte_memcpy(eth->src_addr.addr_bytes, get_local_mac(), RTE_ETHER_ADDR_LEN);
+    rte_memcpy(eth->dst_addr.addr_bytes, dst_mac, RTE_ETHER_ADDR_LEN);
     eth->ether_type = htons(RTE_ETHER_TYPE_ARP);
 
     // 2 arp
